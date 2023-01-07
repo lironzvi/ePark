@@ -6,7 +6,15 @@ public class Kid {
     private String name;
     private Bracelet bracelet;
 
-    public int getIdBySystem() {
+    public Kid (String name, int weight, int height, int age) {
+        this.age = age;
+        this.height = height;
+        this.name = name;
+        this.weight = weight;
+        this.bracelet = new Bracelet(); // TODO: should the bracelet get id on construction?
+    }
+
+        public int getIdBySystem() {
         return idBySystem;
     }
 

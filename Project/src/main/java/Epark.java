@@ -33,6 +33,7 @@ public class Epark {
         double height;
         double weight;
         int age;
+
         while (true) {
             System.out.println("Please enter Child's name: ");
             name = scanner.nextLine();
@@ -88,7 +89,8 @@ public class Epark {
                 System.out.println("Invalid age, please try again");
             }
         }
-//        User.add_kid(name, weight, height, age);
+        User.addKid(name, weight, height, age);
+
     }
 }
 
