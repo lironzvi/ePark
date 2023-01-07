@@ -1,8 +1,10 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static List<Object> systemObjects = null;
+    public static List<Object> systemObjects = new ArrayList<>();
+//    Main.systemObjects.add(dev);
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Epark epark = Epark.getInstance();
@@ -14,21 +16,21 @@ public class Main {
             System.out.println("2. Manage ticket");
             System.out.println("3. Add ride");
             System.out.println("4. Remove ride");
-            System.out.println("5. Exit part");
+            System.out.println("5. Exit park");
             System.out.println("6. Exit");
 
             String input = scanner.nextLine();
-            int choice=-1;
+            int choice;
             try {
                 choice = Integer.parseInt(input);
             } catch (NumberFormatException e) {
                 choice = -1;
-                System.out.println("Invalid choice. Please try again.");
             }
             if (choice >= 1 && choice <= 6) {
                 switch (choice) {
                     case 1:
-                        System.out.println("You chose Option 1");
+                        System.out.println("Child Registration:");
+                        epark.register_child();
                         break;
                     case 2:
                         System.out.println("You chose Option 2");
@@ -43,12 +45,11 @@ public class Main {
                         System.out.println("You chose Option 5");
                         break;
                     case 6:
-                        System.out.println("You chose Option 6");
-                        break;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
-                        break;
+                        System.out.println("Thank you and goodbye");
+                        return;
                 }
+            }else{
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
     }
@@ -62,5 +63,11 @@ public class Main {
         epark.addDevice(device1);
         epark.addDevice(device2);
         epark.addDevice(device3);
+        Guardian guardian1 = new Guardian("Israel");
+        User user1 = new User(guardian1,"password", "1234-5678 04/27 123", 0);
+        epark.addGuardian(guardian1);
+        epark.addUser(user1);
+        epark.setCurUser(user1);
+
     }
 }

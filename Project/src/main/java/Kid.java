@@ -1,12 +1,12 @@
 public class Kid {
     private int idBySystem;
     private int age;
-    private int height;
-    private int weight;
+    private double height;
+    private double weight;
     private String name;
     private Bracelet bracelet;
 
-    public Kid (String name, int weight, int height, int age) {
+    public Kid (String name, double weight, double height, int age) {
         this.age = age;
         this.height = height;
         this.name = name;
@@ -30,19 +30,19 @@ public class Kid {
         this.age = age;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

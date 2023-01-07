@@ -6,11 +6,34 @@ public class Epark {
     ArrayList<Device> devices;
     ArrayList<Guardian> guardians;
     ArrayList<Bracelet> bracelets;
+    ArrayList<User> users;
+    User curUser;
     // probably main methods need to add here
     private Epark(){
         devices = new ArrayList<>();
         guardians = new ArrayList<>();
         bracelets = new ArrayList<>();
+        users = new ArrayList<>();
+    }
+
+    public void addGuardian(Guardian guardian){
+        if(guardian != null){
+            this.guardians.add(guardian);
+            Main.systemObjects.add(guardian);
+        }
+    }
+
+    public void addUser(User user){
+        if(user != null){
+            this.users.add(user);
+            Main.systemObjects.add(user);
+        }
+    }
+
+    public void setCurUser(User user){
+        if(user != null) {
+            this.curUser = user;
+        }
     }
 
     public static Epark getInstance() {
@@ -89,8 +112,8 @@ public class Epark {
                 System.out.println("Invalid age, please try again");
             }
         }
-        User.addKid(name, weight, height, age);
-
+        int kid_id = curUser.addKid(name, weight, height, age);
+        System.out.println("Kid registered successfully\nKid's id is: "+kid_id);
     }
 }
 

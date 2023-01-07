@@ -1,5 +1,3 @@
-import com.sun.xml.internal.bind.v2.TODO;
-import org.omg.CORBA.WStringSeqHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,11 +38,12 @@ public class User {
         this.password = password;
     }
 
-    public void addKid(String name, int weight, int height, int age){
+    public int addKid(String name, double weight, double height, int age){
         Kid newKid = new Kid(name, weight, height, age);
         Main.systemObjects.add(newKid);
+        this.guardian.addKidToList(newKid);
         this.eticketMap.put(newKid, new Eticket(111)); // TODO: should the eticket get id on construction?
-
+        return newKid.getIdBySystem();
     }
     public String getCardDetails() {
         return cardDetails;
@@ -70,15 +69,15 @@ public class User {
         // should ask which entries to remove and remove them
     }
 
-    public double getBudgetExpence(int ticketId){
-        // get ticket and return its budget
-    }
+//    public double getBudgetExpence(int ticketId){
+//        // get ticket and return its budget
+//    }
 
     public void goToCheckout(int ticketId){
         // not sure what checkout means
     }
 
-    public int[] showKidLocation(){
-        // ask for kid's id?
-    }
+//    public int[] showKidLocation(){
+//        // ask for kid's id?
+//    }
 }
