@@ -2,6 +2,7 @@ public class Device {
     private boolean extreme;
     private int deviceId;
     private boolean isActive;
+
     private boolean manufactor;
     private double entryPrice;
     private Restrict restrict;

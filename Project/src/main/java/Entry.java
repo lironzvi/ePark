@@ -1,9 +1,11 @@
 public class Entry {
     Device device;
-    int numberOfEntries;
-
-    public Entry(int deviceId, int numberOfEntries) {
-        this.numberOfEntries = numberOfEntries;
+    int currEntryPrice;
+    public Entry(Device device) {
+        if (device != null){
+            this.device = device;
+            this.currEntryPrice = (int)device.getEntryPrice();
+        }
     }
 
     public Device getDevice() {
@@ -14,11 +16,7 @@ public class Entry {
         this.device = device;
     }
 
-    public int getNumberOfEntries() {
-        return numberOfEntries;
-    }
-
-    public void setNumberOfEntries(int numberOfEntries) {
-        this.numberOfEntries = numberOfEntries;
-    }
+    public int getEntryPrice(){ return this.currEntryPrice; }
 }
+
+
