@@ -7,6 +7,13 @@ public class Eticket {
     private Date expirationDate;
     private double ticketPrice;
 
+    public Eticket(int ticketId){
+        this.listEntries = new ArrayList<>();
+        this.ticketId = ticketId;
+        this.ticketPrice = 0;
+        expirationDate = null;
+
+    }
     public int getEticketId() {
         return ticketId;
     }
