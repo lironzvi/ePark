@@ -39,12 +39,23 @@ public class Eticket {
         this.ticketPrice = ticketPrice;
     }
 
-    public void addToEntries(int deviceId,int num){
-
+    public void addToEntries(Device device){
+        if (device != null){
+            Entry newEntry = new Entry(device);
+            listEntries.add(newEntry);
+            this.ticketPrice += newEntry.getEntryPrice();
+        }
     }
 
-    public void deleteFromEntry(Entry entry){
-
+    public boolean deleteFromEntry(int deviceId){
+        if(!isEntryExist(deviceId)){ return false;}
+        for(Entry entry: listEntries){
+            if (entry.getDevice().getDeviceId() == deviceId){
+                listEntries.remove(entry);
+                return true;
+            }
+        }
+        return true;
     }
 
     public boolean isEntryExist(int deviceId){
@@ -56,7 +67,14 @@ public class Eticket {
         return false;
     }
 
-    public void checkout(){
-
+    public double checkout(){
+        if(listEntries.isEmpty()) { return ticketPrice; }
+        int sumToRemove = 0;
+        for(Entry entry : listEntries){
+            sumToRemove += entry.getEntryPrice();
+        }
+        listEntries.clear();
+        ticketPrice -= sumToRemove;
+        return ticketPrice;
     }
 }
