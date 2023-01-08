@@ -14,10 +14,9 @@ public class Main {
             System.out.println("Please choose an action:");
             System.out.println("1. Register child");
             System.out.println("2. Manage ticket");
-            System.out.println("3. Add ride");
-            System.out.println("4. Remove ride");
-            System.out.println("5. Exit park");
-            System.out.println("6. Exit");
+            System.out.println("3. Go to app");
+            System.out.println("4. Exit park");
+            System.out.println("5. Exit");
 
             String input = scanner.nextLine();
             int choice;
@@ -26,27 +25,28 @@ public class Main {
             } catch (NumberFormatException e) {
                 choice = -1;
             }
-            if (choice >= 1 && choice <= 6) {
+            if (choice >= 1 && choice <= 5) {
                 switch (choice) {
                     case 1:
                         System.out.println("Child Registration:");
                         epark.register_child();
                         break;
                     case 2:
-                        System.out.println("You chose Option 2");
+                        System.out.println("Manage ticket:");
+                        epark.manage_ticket();
                         break;
                     case 3:
-                        System.out.println("You chose Option 3");
+                        System.out.println("Go to app:");
+                        epark.appLocation();
                         break;
                     case 4:
-                        System.out.println("You chose Option 4");
+                        System.out.println("Exit park:");
+                        epark.exitPark();
                         break;
                     case 5:
-                        System.out.println("You chose Option 5");
+                        System.out.println("Exit:");
+                        System.out.println("Bye-Bye");
                         break;
-                    case 6:
-                        System.out.println("Thank you and goodbye");
-                        return;
                 }
             }else{
                     System.out.println("Invalid choice. Please try again.");
