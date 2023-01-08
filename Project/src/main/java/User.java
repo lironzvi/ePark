@@ -1,10 +1,9 @@
-
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class User {
     private Guardian guardian;
-    private HashMap<Kid, Eticket> eticketMap;
+    private HashMap<Integer, Eticket> eticketMap;
     private String password;
     private String cardDetails;
     private double budget;
@@ -24,11 +23,11 @@ public class User {
         this.guardian = guardian;
     }
 
-    public HashMap<Kid, Eticket> GeteticketMap() {
+    public HashMap<Integer, Eticket> GeteticketMap() {
         return eticketMap;
     }
 
-    public void setEticketList(HashMap<Kid, Eticket> eticketMap) {this.eticketMap = eticketMap; }
+    public void setEticketList(HashMap<Integer, Eticket> eticketMap) {this.eticketMap = eticketMap; }
 
     public String getPassword() {
         return password;
@@ -38,13 +37,18 @@ public class User {
         this.password = password;
     }
 
-    public int addKid(String name, double weight, double height, int age){
-        Kid newKid = new Kid(name, weight, height, age);
+    public int addKid(String name, double weight, double height, int age, int idBySystem){
+        Kid newKid = new Kid(name, weight, height, age, idBySystem);
         Main.systemObjects.add(newKid);
         this.guardian.addKidToList(newKid);
-        this.eticketMap.put(newKid, new Eticket(111)); // TODO: should the eticket get id on construction?
+        this.eticketMap.put(newKid.getIdBySystem(), new Eticket(111)); // TODO: should the eticket get id on construction?
         return newKid.getIdBySystem();
     }
+
+    public Eticket getEticketFromKid(int id){
+        return this.eticketMap.getOrDefault(id, null);
+    }
+
     public String getCardDetails() {
         return cardDetails;
     }
@@ -61,23 +65,35 @@ public class User {
         this.budget = budget;
     }
 
-    public void buyEntries(int eticketId){
-        // should ask which entries to add and add them
+    public void buyEntries(Device device, int kidId){
+        //TODO
+        Eticket ticket = eticketMap.get(kidId);
+        if (device.getEntryPrice() <= getBudgetExpence(ticket)){
+            ticket.addToEntries(device);
+            System.out.println("device was added");
+        }
+        else{
+            System.out.println("budget is not enough for this device");
+        }
     }
 
-    public void removeEntries(int eticketId){
-        // should ask which entries to remove and remove them
+    public void removeEntries(Device device, int kidId){
+        Eticket ticket = eticketMap.get(kidId);
+        ticket.deleteFromEntry(device.getDeviceId());
+        System.out.println("device was removed");
     }
 
-//    public double getBudgetExpence(int ticketId){
-//        // get ticket and return its budget
-//    }
+
+    public double getBudgetExpence(Eticket ticketId){
+        return budget - ticketId.getTicketPrice();
+    }
 
     public void goToCheckout(int ticketId){
         // not sure what checkout means
     }
 
-//    public int[] showKidLocation(){
-//        // ask for kid's id?
-//    }
+    public void showKidLocation(Kid kid){
+        System.out.println("kid: " + kid.getName());
+        System.out.println("location: " + Arrays.toString(kid.getBracelet().getLocation()));
+    }
 }
