@@ -3,6 +3,7 @@ import java.util.Date;
 public class Bracelet {
     private Date expirationTime;
     private boolean isInUse;
+    private int braceletId;
     private int[] location;
     private Eticket ticket;
 
@@ -36,5 +37,20 @@ public class Bracelet {
 
     public void setTicket(Eticket ticket) {
         this.ticket = ticket;
+    }
+
+    public int getBraceletId() {
+        return braceletId;
+    }
+
+    public void setBraceletId(int braceletId) {
+        this.braceletId = braceletId;
+    }
+
+    public void reset() {
+        this.expirationTime = null;
+        this.location = null;
+        this.isInUse  = false;
+        this.ticket = null;
     }
 }
