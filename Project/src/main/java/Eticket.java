@@ -59,6 +59,7 @@ public class Eticket {
         for(Entry entry: listEntries){
             if (entry.getDevice().getDeviceId() == deviceId){
                 listEntries.remove(entry);
+                this.ticketPrice -= entry.getEntryPrice();
                 return true;
             }
         }

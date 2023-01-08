@@ -1,19 +1,23 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Epark {
+    public static final int maxKids = 100;
     private static Epark instance;
-    ArrayList<Device> devices;
+    Map<Integer, Device> devices;
     ArrayList<Guardian> guardians;
-    ArrayList<Bracelet> bracelets;
+    Map<Integer, Bracelet> bracelets;
     ArrayList<User> users;
     User curUser;
+    Set<Integer> idToKidBySystem = new HashSet<>();
     // probably main methods need to add here
     private Epark(){
-        devices = new ArrayList<>();
+        devices = new HashMap<>();
         guardians = new ArrayList<>();
-        bracelets = new ArrayList<>();
+        bracelets = new HashMap<>();
         users = new ArrayList<>();
+        for (int i = 0; i < maxKids; i ++){
+            idToKidBySystem.add(i);
+        }
     }
 
     public void addGuardian(Guardian guardian){
@@ -45,7 +49,7 @@ public class Epark {
 
     public void addDevice(Device dev){
         if (dev != null){
-            this.devices.add(dev);
+            this.devices.put(dev.getDeviceId(), dev);
             Main.systemObjects.add(dev);
         }
     }
@@ -112,8 +116,227 @@ public class Epark {
                 System.out.println("Invalid age, please try again");
             }
         }
-        int kid_id = curUser.addKid(name, weight, height, age);
-        System.out.println("Kid registered successfully\nKid's id is: "+kid_id);
+        int idBySystem = idToKidBySystem.stream().findAny().get();
+        curUser.addKid(name, weight, height, age, idBySystem);
+        System.out.println("Kid registered successfully\nKid's id is: " + idBySystem);
+    }
+
+    public void manage_ticket() {
+        Eticket ticket;
+        Kid kid;
+        Scanner scanner = new Scanner(System.in);
+        int id;
+        String action;
+        while (true) {
+            System.out.println("Enter Child's Id:");
+            try{
+                id = new Integer(scanner.nextLine());
+            } catch(Exception e){
+                System.out.println("Please enter id in digit only format!");
+                continue;
+            }
+            ticket = curUser.getEticketFromKid(id);
+            kid = curUser.getGuardian().getKidId(id);
+            if (ticket == null){
+                System.out.println("Child's name doesn't exist in this user");
+            }
+            else{
+                break;
+            }
+        }
+        while (true) {
+            System.out.println("Please choose an action:");
+            System.out.println("1. Add ride to ticket");
+            System.out.println("2. Remove ride from ticket");
+            System.out.println("3. Check if entry exist");
+            System.out.println("4. exit");
+            String input = scanner.nextLine();
+            int choice;
+            try {
+                choice = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                choice = -1;
+            }
+            if (choice >= 1 && choice <= 4) {
+                switch (choice) {
+                    case 1:
+                        addRide(kid, scanner);
+                        break;
+
+                    case 2:
+                        removeRide(kid, scanner);
+                        break;
+
+                    case 3:
+                        checkIfDeviceExist(ticket, scanner);
+                        break;
+                    case 4:
+                        break;
+                }
+            }
+        }
+    }
+
+    private void checkIfDeviceExist(Eticket ticket, Scanner scanner) {
+        System.out.println("Which device would you like to check if exist (enter device ID)");
+        String deviceId = scanner.nextLine();
+        int deviceIdToCheck;
+        try {
+            deviceIdToCheck = Integer.parseInt(deviceId);
+        } catch (NumberFormatException e) {
+            deviceIdToCheck = -1;
+        }
+        if (ticket.isEntryExist(deviceIdToCheck)) {
+            System.out.println("Device is in your ticket");
+        }
+        else{
+            System.out.println("Device is not in your ticket");
+        }
+    }
+
+    private void removeRide(Kid kid, Scanner scanner) {
+        int ridesToDelete = ShowUserCurrentDevices(kid);
+        if (ridesToDelete >= 1) {
+            System.out.println("Which device would you like to remove (enter device ID)");
+            String deviceId = scanner.nextLine();
+            int deviceIdint;
+            try {
+                deviceIdint = Integer.parseInt(deviceId);
+            } catch (NumberFormatException e) {
+                deviceIdint = -1;
+            }
+            curUser.removeEntries(devices.get(deviceIdint), kid.getIdBySystem());
+        }
+        else{
+            System.out.println("No entries to delete");
+        }
+        return;
+    }
+
+    private void addRide(Kid kid, Scanner scanner) {
+        int rides = ShowAvailableDevices(kid);
+        if (rides >= 1) {
+            System.out.println("Which device would you like to add (enter device ID)");
+            String deviceId = scanner.nextLine();
+            int deviceIdint;
+            try {
+                deviceIdint = Integer.parseInt(deviceId);
+            } catch (NumberFormatException e) {
+                deviceIdint = -1;
+            }
+
+            if (devices.get(deviceIdint).isExtreme()){
+                System.out.println("This device is extreme, are you sure you want to add it?(y/n)");
+                String answere = scanner.nextLine().toLowerCase();
+                if (!answere.contains("y")){
+                    System.out.println("Not adding extreme device");
+                    return;
+                }
+                System.out.println("Adding extreme device");
+            }
+            curUser.buyEntries(devices.get(deviceIdint), kid.getIdBySystem());
+        }
+        else{
+            System.out.println("No entries to add");
+        }
+    }
+
+    private int ShowUserCurrentDevices(Kid kid) {
+        Eticket ticket = curUser.getEticketFromKid(kid.getIdBySystem());
+        int availableRides = 0;
+        ArrayList<Entry> entryList =  ticket.getListEntries();
+        for (Entry entry : entryList){
+            System.out.println(entry.getDevice());
+            availableRides ++;
+        }
+        System.out.println("overall " + availableRides + " available rides");
+        return availableRides;
+    }
+
+    public int ShowAvailableDevices(Kid kid){
+        int availableRides = 0;
+        Device device;
+         for (int deviceId : devices.keySet()) {
+             device = devices.get(deviceId);
+             if(device.isKidInRestriction(kid) && device.isActive()){
+                 System.out.println(device);
+                 availableRides ++;
+             }
+         }
+         System.out.println("overall " + availableRides + " available rides");
+         return availableRides;
+    }
+
+    public void appLocation() {
+        Eticket ticket;
+        Kid kid;
+        Scanner scanner = new Scanner(System.in);
+        int id;
+        String action;
+        while (true) {
+            System.out.println("Enter Child's Id:");
+            try{
+                id = new Integer(scanner.nextLine());
+            } catch(Exception e){
+                System.out.println("Please enter id in digit only format!");
+                continue;
+            }
+            ticket = curUser.getEticketFromKid(id);
+            kid = curUser.getGuardian().getKidId(id);
+            if (ticket == null){
+                System.out.println("Child's name doesn't exist in this user");
+            }
+            else{
+                break;
+            }
+        }
+        curUser.showKidLocation(kid);
+    }
+
+    public void exitPark() {
+        Eticket ticket;
+        Kid kid;
+        Scanner scanner = new Scanner(System.in);
+        int id;
+        String action;
+        while (true) {
+            System.out.println("Enter Child's Id:");
+            try{
+                id = new Integer(scanner.nextLine());
+            } catch(Exception e){
+                System.out.println("Please enter id in digit only format!");
+                continue;
+            }
+            ticket = curUser.getEticketFromKid(id);
+            kid = curUser.getGuardian().getKidId(id);
+            if (ticket == null){
+                System.out.println("Child's name doesn't exist in this user");
+            }
+            else{
+                break;
+            }
+        }
+        returnBraclet(kid);
+        CheckOutCharge(kid);
+        nnRegisterKid(kid);
+    }
+
+    private void CheckOutCharge(Kid kid) {
+        double price = curUser.getEticketFromKid(kid.getIdBySystem()).getTicketPrice();
+        System.out.println("you were charged " + price + " units of money");
+    }
+
+    private void nnRegisterKid(Kid kid) {
+        idToKidBySystem.add(kid.getIdBySystem());
+        ArrayList<Kid> list = curUser.getGuardian().getKidsList();
+        list.remove(kid);
+        curUser.getGuardian().setKidsList(list);
+    }
+
+    private void returnBraclet(Kid kid) {
+        bracelets.remove(kid.getBracelet().getBraceletId());
+        kid.getBracelet().reset();
+
     }
 }
 
