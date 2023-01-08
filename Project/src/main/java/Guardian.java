@@ -7,6 +7,8 @@ public class Guardian {
 
     public Guardian(String name) {
         this.name = name;
+        this.kidsList = new ArrayList<>();
+        this.eticketList = new ArrayList<>();
     }
 
     public ArrayList<Eticket> getEticketList() {
