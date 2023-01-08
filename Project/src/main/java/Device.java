@@ -44,4 +44,20 @@ public class Device {
     public void setEntryPrice(double entryPrice) {
         this.entryPrice = entryPrice;
     }
+
+    public String toString(){
+        String s = "";
+        s += "Name: "+ name;
+        s += "\n";
+        s += "Device Id: "+ deviceId;
+        s += "\n";
+        s += "Is Extreme: "+ extreme;
+        s += "\n";
+        s += "Entry Price: "+ entryPrice;
+        s += "\n";
+        s += "Entry Price: "+ entryPrice;
+        s += "\n";
+        s += "\n";
+        return s;
+    }
 }
