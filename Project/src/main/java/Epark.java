@@ -229,7 +229,7 @@ public class Epark {
                 if (devices.get(deviceIdint).isExtreme()) {
                     System.out.println("This device is extreme, are you sure you want to add it?(y/n)");
                     String answer = scanner.nextLine().toLowerCase();
-                    if (!answer.contains("y")) {
+                    if (!answer.equals("y")) {
                         System.out.println("Not adding extreme device");
                         return;
                     }

@@ -65,9 +65,11 @@ public class Main {
         epark.addDevice(device3);
         Guardian guardian1 = new Guardian("Israel");
         User user1 = new User(guardian1,"password", "1234-5678 04/27 123", 0);
+        user1.depositMoney(2000);
         epark.addGuardian(guardian1);
         epark.addUser(user1);
         epark.setCurUser(user1);
+
 
     }
 }

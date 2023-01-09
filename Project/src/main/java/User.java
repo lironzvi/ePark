@@ -61,8 +61,13 @@ public class User {
         return budget;
     }
 
-    public void setBudget(double budget) {
-        this.budget = budget;
+    public void depositMoney(double budget) {
+        if (isTransactionApproved(budget))
+            this.budget += budget;
+    }
+
+    public Boolean isTransactionApproved(double amount){
+        return true;
     }
 
     public void buyEntries(Device device, int kidId){
