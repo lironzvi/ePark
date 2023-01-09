@@ -149,7 +149,7 @@ public class Epark {
             System.out.println("1. Add ride to ticket");
             System.out.println("2. Remove ride from ticket");
             System.out.println("3. Check if entry exist");
-            System.out.println("4. exit");
+            System.out.println("4. Back to main menu");
             String input = scanner.nextLine();
             int choice;
             try {
@@ -171,7 +171,7 @@ public class Epark {
                         checkIfDeviceExist(ticket, scanner);
                         break;
                     case 4:
-                        break;
+                        return;
                 }
             }
         }
@@ -214,8 +214,8 @@ public class Epark {
     }
 
     private void addRide(Kid kid, Scanner scanner) {
-        int rides = ShowAvailableDevices(kid);
-        if (rides >= 1) {
+        ArrayList<Integer> rides = ShowAvailableDevices(kid);
+        if (rides.size() >= 1) {
             System.out.println("Which device would you like to add (enter device ID)");
             String deviceId = scanner.nextLine();
             int deviceIdint;
@@ -225,16 +225,21 @@ public class Epark {
                 deviceIdint = -1;
             }
 
-            if (devices.get(deviceIdint).isExtreme()){
-                System.out.println("This device is extreme, are you sure you want to add it?(y/n)");
-                String answere = scanner.nextLine().toLowerCase();
-                if (!answere.contains("y")){
-                    System.out.println("Not adding extreme device");
-                    return;
+            if (devices.get(deviceIdint)!= null && rides.contains(deviceIdint)) {
+                if (devices.get(deviceIdint).isExtreme()) {
+                    System.out.println("This device is extreme, are you sure you want to add it?(y/n)");
+                    String answer = scanner.nextLine().toLowerCase();
+                    if (!answer.contains("y")) {
+                        System.out.println("Not adding extreme device");
+                        return;
+                    }
+                    System.out.println("Adding extreme device");
                 }
-                System.out.println("Adding extreme device");
+                curUser.buyEntries(devices.get(deviceIdint), kid.getIdBySystem());
             }
-            curUser.buyEntries(devices.get(deviceIdint), kid.getIdBySystem());
+            else{
+                System.out.println("Invalid device id please try again.");
+            }
         }
         else{
             System.out.println("No entries to add");
@@ -253,17 +258,17 @@ public class Epark {
         return availableRides;
     }
 
-    public int ShowAvailableDevices(Kid kid){
-        int availableRides = 0;
+    public ArrayList <Integer> ShowAvailableDevices(Kid kid){
+        ArrayList <Integer> availableRides = new ArrayList<>();
         Device device;
          for (int deviceId : devices.keySet()) {
              device = devices.get(deviceId);
              if(device.isKidInRestriction(kid) && device.isActive()){
                  System.out.println(device);
-                 availableRides ++;
+                 availableRides.add(deviceId);
              }
          }
-         System.out.println("overall " + availableRides + " available rides");
+         System.out.println("overall " + availableRides.size() + " available rides");
          return availableRides;
     }
 

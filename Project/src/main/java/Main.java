@@ -46,7 +46,7 @@ public class Main {
                     case 5:
                         System.out.println("Exit:");
                         System.out.println("Bye-Bye");
-                        break;
+                        return;
                 }
             }else{
                     System.out.println("Invalid choice. Please try again.");

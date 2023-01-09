@@ -55,8 +55,6 @@ public class Device {
         s += "\n";
         s += "Entry Price: "+ entryPrice;
         s += "\n";
-        s += "Entry Price: "+ entryPrice;
-        s += "\n";
         s += "\n";
         return s;
     }
