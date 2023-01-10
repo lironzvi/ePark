@@ -61,6 +61,8 @@ public class Kid {
 
     public String toString(){
         String s = "";
+        s += "id: ";
+        s += getIdBySystem();
         s += "Name: ";
         s += getName();
         s += "\n";
