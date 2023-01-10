@@ -59,6 +59,21 @@ public class Kid {
         return bracelet;
     }
 
+    public String toString(){
+        String s = "";
+        s += "Name: ";
+        s += getName();
+        s += "\n";
+        s += "Height: ";
+        s += getHeight();
+        s += "\n";
+        s += "Weight: ";
+        s += getWeight();
+        s += "\n";
+        s += "Age: ";
+        s += getAge();
+        return s;
+    }
     public void setBracelet(Bracelet bracelet) {
         this.bracelet = bracelet;
     }

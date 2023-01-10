@@ -8,15 +8,19 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Epark epark = Epark.getInstance();
+        Kid kid;
         epark_init(epark);
         System.out.println("Welcome to ePark ");
         while (true) {
             System.out.println("Please choose an action:");
             System.out.println("1. Register child");
             System.out.println("2. Manage ticket");
-            System.out.println("3. Go to app");
-            System.out.println("4. Exit park");
-            System.out.println("5. Exit");
+            System.out.println("3. Add ride");
+            System.out.println("4. Remove ride");
+            System.out.println("5. Exit park");
+            System.out.println("6. Exit");
+            System.out.println("7. Show kids list");
+            System.out.println("8. Add budget");
 
             String input = scanner.nextLine();
             int choice;
@@ -25,7 +29,7 @@ public class Main {
             } catch (NumberFormatException e) {
                 choice = -1;
             }
-            if (choice >= 1 && choice <= 5) {
+            if (choice >= 1 && choice <= 8) {
                 switch (choice) {
                     case 1:
                         System.out.println("Child Registration:");
@@ -36,19 +40,33 @@ public class Main {
                         epark.manage_ticket();
                         break;
                     case 3:
-                        System.out.println("Go to app:");
-                        epark.appLocation();
+                        System.out.println("Add Ride:");
+                        kid = epark.getKidFromUser();
+                        epark.addRide(kid, scanner);
                         break;
                     case 4:
+                        System.out.println("Remove Ride:");
+                        kid = epark.getKidFromUser();
+                        epark.removeRide(kid, scanner);
+                        break;
+                    case 5:
                         System.out.println("Exit park:");
                         epark.exitPark();
                         break;
-                    case 5:
+                    case 6:
                         System.out.println("Exit:");
                         System.out.println("Bye-Bye");
                         return;
+                    case 7:
+                        System.out.println("showing kids list:");
+                        epark.showKidsPerUser();
+                        break;
+                    case 8:
+                        System.out.println("add to budget:");
+                        epark.addToBudget();
+                        break;
                 }
-            }else{
+            } else{
                     System.out.println("Invalid choice. Please try again.");
             }
         }
@@ -69,7 +87,5 @@ public class Main {
         epark.addGuardian(guardian1);
         epark.addUser(user1);
         epark.setCurUser(user1);
-
-
     }
 }

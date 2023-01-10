@@ -60,6 +60,7 @@ public class Epark {
         double height;
         double weight;
         int age;
+        int budget;
 
         while (true) {
             System.out.println("Please enter Child's name: ");
@@ -116,6 +117,18 @@ public class Epark {
                 System.out.println("Invalid age, please try again");
             }
         }
+        while (true) {
+            System.out.println("Enter budget");
+            String input = scanner.nextLine();
+            try {
+                budget = Integer.parseInt(input);
+                curUser.depositMoney(budget);
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please try again.");
+                continue;
+            }
+        }
         int idBySystem = idToKidBySystem.stream().findAny().get();
         curUser.addKid(name, weight, height, age, idBySystem);
         System.out.println("Kid registered successfully\nKid's id is: " + idBySystem);
@@ -126,7 +139,6 @@ public class Epark {
         Kid kid;
         Scanner scanner = new Scanner(System.in);
         int id;
-        String action;
         while (true) {
             System.out.println("Enter Child's Id:");
             try{
@@ -137,7 +149,7 @@ public class Epark {
             }
             ticket = curUser.getEticketFromKid(id);
             kid = curUser.getGuardian().getKidId(id);
-            if (ticket == null){
+            if (kid == null){
                 System.out.println("Child's name doesn't exist in this user");
             }
             else{
@@ -146,10 +158,9 @@ public class Epark {
         }
         while (true) {
             System.out.println("Please choose an action:");
-            System.out.println("1. Add ride to ticket");
-            System.out.println("2. Remove ride from ticket");
-            System.out.println("3. Check if entry exist");
-            System.out.println("4. Back to main menu");
+            System.out.println("1. Go To App");
+            System.out.println("2. Check if entry exist");
+            System.out.println("3. Back to main menu");
             String input = scanner.nextLine();
             int choice;
             try {
@@ -160,24 +171,20 @@ public class Epark {
             if (choice >= 1 && choice <= 4) {
                 switch (choice) {
                     case 1:
-                        addRide(kid, scanner);
+                        appLocation(kid);
                         break;
 
                     case 2:
-                        removeRide(kid, scanner);
-                        break;
-
-                    case 3:
                         checkIfDeviceExist(ticket, scanner);
                         break;
-                    case 4:
+                    case 3:
                         return;
                 }
             }
         }
     }
 
-    private void checkIfDeviceExist(Eticket ticket, Scanner scanner) {
+    public void checkIfDeviceExist(Eticket ticket, Scanner scanner) {
         System.out.println("Which device would you like to check if exist (enter device ID)");
         String deviceId = scanner.nextLine();
         int deviceIdToCheck;
@@ -194,7 +201,7 @@ public class Epark {
         }
     }
 
-    private void removeRide(Kid kid, Scanner scanner) {
+    public void removeRide(Kid kid, Scanner scanner) {
         int ridesToDelete = ShowUserCurrentDevices(kid);
         if (ridesToDelete >= 1) {
             System.out.println("Which device would you like to remove (enter device ID)");
@@ -213,7 +220,7 @@ public class Epark {
         return;
     }
 
-    private void addRide(Kid kid, Scanner scanner) {
+    public void addRide(Kid kid, Scanner scanner) {
         ArrayList<Integer> rides = ShowAvailableDevices(kid);
         if (rides.size() >= 1) {
             System.out.println("Which device would you like to add (enter device ID)");
@@ -226,7 +233,11 @@ public class Epark {
             }
 
             if (devices.get(deviceIdint)!= null && rides.contains(deviceIdint)) {
-                if (devices.get(deviceIdint).isExtreme()) {
+                if (curUser.getEticketFromKid(kid.getIdBySystem()).isEntryExist(deviceIdint)){
+                    System.out.println("Device already in your ticket");
+                    return;
+                }
+                else if (devices.get(deviceIdint).isExtreme()) {
                     System.out.println("This device is extreme, are you sure you want to add it?(y/n)");
                     String answer = scanner.nextLine().toLowerCase();
                     if (!answer.equals("y")) {
@@ -246,7 +257,7 @@ public class Epark {
         }
     }
 
-    private int ShowUserCurrentDevices(Kid kid) {
+    public int ShowUserCurrentDevices(Kid kid) {
         Eticket ticket = curUser.getEticketFromKid(kid.getIdBySystem());
         int availableRides = 0;
         ArrayList<Entry> entryList =  ticket.getListEntries();
@@ -272,29 +283,7 @@ public class Epark {
          return availableRides;
     }
 
-    public void appLocation() {
-        Eticket ticket;
-        Kid kid;
-        Scanner scanner = new Scanner(System.in);
-        int id;
-        String action;
-        while (true) {
-            System.out.println("Enter Child's Id:");
-            try{
-                id = new Integer(scanner.nextLine());
-            } catch(Exception e){
-                System.out.println("Please enter id in digit only format!");
-                continue;
-            }
-            ticket = curUser.getEticketFromKid(id);
-            kid = curUser.getGuardian().getKidId(id);
-            if (ticket == null){
-                System.out.println("Child's name doesn't exist in this user");
-            }
-            else{
-                break;
-            }
-        }
+    public void appLocation(Kid kid) {
         curUser.showKidLocation(kid);
     }
 
@@ -316,6 +305,7 @@ public class Epark {
             kid = curUser.getGuardian().getKidId(id);
             if (ticket == null){
                 System.out.println("Child's name doesn't exist in this user");
+                return;
             }
             else{
                 break;
@@ -323,25 +313,73 @@ public class Epark {
         }
         returnBraclet(kid);
         CheckOutCharge(kid);
-        nnRegisterKid(kid);
+        unRegister(kid);
     }
 
-    private void CheckOutCharge(Kid kid) {
+    public void CheckOutCharge(Kid kid) {
         double price = curUser.getEticketFromKid(kid.getIdBySystem()).getTicketPrice();
+        curUser.charge(curUser.getBudget() - price);
         System.out.println("you were charged " + price + " units of money");
     }
 
-    private void nnRegisterKid(Kid kid) {
+    public void unRegister(Kid kid) {
         idToKidBySystem.add(kid.getIdBySystem());
         ArrayList<Kid> list = curUser.getGuardian().getKidsList();
         list.remove(kid);
         curUser.getGuardian().setKidsList(list);
     }
 
-    private void returnBraclet(Kid kid) {
+    public void returnBraclet(Kid kid) {
         bracelets.remove(kid.getBracelet().getBraceletId());
         kid.getBracelet().reset();
 
+    }
+
+    public Kid getKidFromUser(){
+        Kid kid;
+        Scanner scanner = new Scanner(System.in);
+        int id;
+        while (true) {
+            System.out.println("Enter Child's Id:");
+            try{
+                id = new Integer(scanner.nextLine());
+            } catch(Exception e){
+                System.out.println("Please enter id in digit only format!");
+                continue;
+            }
+            kid = curUser.getGuardian().getKidId(id);
+            if (kid == null){
+                System.out.println("Child's name doesn't exist in this user");
+            }
+            else{
+                break;
+            }
+        }
+        return kid;
+    }
+
+    public void showKidsPerUser() {
+        for (Kid kid : curUser.getGuardian().getKidsList()){
+            System.out.println(kid);
+        }
+    }
+
+    public void addToBudget() {
+        int deposit;
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("How much would you like to add to budget:");
+            try{
+                deposit = new Integer(scanner.nextLine());
+            } catch(Exception e){
+                System.out.println("Please enter amount in digit only format!");
+                continue;
+            }
+            System.out.println("Adding to budget");
+            curUser.depositMoney(deposit);
+            System.out.println("Budget is now " + curUser.getBudget());
+            return;
+        }
     }
 }
 

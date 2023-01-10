@@ -66,6 +66,9 @@ public class User {
             this.budget += budget;
     }
 
+    public void charge(double budget){
+        this.budget -= budget;
+    }
     public Boolean isTransactionApproved(double amount){
         return true;
     }
