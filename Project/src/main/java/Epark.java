@@ -246,11 +246,7 @@ public class Epark {
             }
 
             if (devices.get(deviceIdint)!= null && rides.contains(deviceIdint)) {
-                if (curUser.getEticketFromKid(kid.getIdBySystem()).isEntryExist(deviceIdint)){
-                    System.out.println("Device already in your ticket");
-                    return;
-                }
-                else if (devices.get(deviceIdint).isExtreme()) {
+                if (devices.get(deviceIdint).isExtreme()) {
                     System.out.println("This device is extreme, are you sure you want to add it?(y/n)");
                     String answer = scanner.nextLine().toLowerCase();
                     if (!answer.equals("y")) {
