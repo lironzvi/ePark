@@ -326,7 +326,7 @@ public class Epark {
     }
 
     public void CheckOutCharge(Kid kid) {
-        double price = curUser.getEticketFromKid(kid.getIdBySystem()).getTicketPrice();
+        double price = curUser.getEticketFromKid(kid.getIdBySystem()).checkout();
         curUser.charge(curUser.getBudget() - price);
         System.out.println("you were charged " + price + " units of money");
     }
