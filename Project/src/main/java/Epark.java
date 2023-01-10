@@ -118,6 +118,19 @@ public class Epark {
             }
         }
         while (true) {
+            System.out.println("Enter Credit Card Details:");
+            String input = scanner.nextLine();
+            try {
+                System.out.println("Approving card");
+                curUser.isTransactionApproved(0);
+                System.out.println("card Approved");
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please try again.");
+                continue;
+            }
+        }
+        while (true) {
             System.out.println("Enter budget");
             String input = scanner.nextLine();
             try {
